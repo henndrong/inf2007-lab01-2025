@@ -38,7 +38,8 @@ class MainActivity : ComponentActivity() {
 fun MainScreen() {
     Lab01Theme {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            var username by remember { mutableStateOf("") }
+            var username by remember { mutableStateOf("") } // User's input in the text field
+            var submittedUsername by remember { mutableStateOf("") } // Stores the name after submission
             var showGreeting by remember { mutableStateOf(false) }
 
             Column(
@@ -49,14 +50,17 @@ fun MainScreen() {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 UserInput(
-                    name = name,
-                    onNameChange = { name = it }
+                    name = username,
+                    onNameChange = { username = it }
                 )
 
                 Button(
                     onClick = {
                         if (username.isNotBlank()) {
-                            showGreeting = false
+                            submittedUsername = username // Update the submitted name
+                            showGreeting = true // Show the greeting
+                        } else {
+                            showGreeting = false // Hide the greeting if no name is entered
                         }
                     },
                     modifier = Modifier
@@ -67,13 +71,12 @@ fun MainScreen() {
                 }
 
                 if (showGreeting) {
-                    Greeeting(
-                        name = username,
+                    Greeting(
+                        name = submittedUsername, // Use the submitted name for the greeting
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 16.dp)
                     )
-
                 }
             }
         }
@@ -95,8 +98,8 @@ fun UserInput(name: String, onNameChange: (String) -> Unit, modifier: Modifier =
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
-        text = "Hello $username!, Welcome to InF2007!",
-        modifier = Modifier
+        text = "Hello $name!, Welcome to InF2007!",
+        modifier = modifier
             .fillMaxWidth()
             .testTag("greeting")
     )
